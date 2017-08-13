@@ -1,5 +1,6 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const isProduction = false;
 
 module.exports = {
@@ -13,7 +14,10 @@ module.exports = {
       { test: /\.css$/, loader: "style!css" },
       {
         test: /\.less$/,
-        loaders: ["style-loader", "css-loader", "less-loader"]
+        use: ExtractTextPlugin.extract({
+          fallback: "style-loader",
+          use: ["css-loader", "less-loader"]
+        })
       },
       { test: /\.js$/, loader: "babel-loader", options: { presets: ["env"] } }
     ]
@@ -21,7 +25,8 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: "./index.html"
-    })
+    }),
+    new ExtractTextPlugin("styles.css")
   ],
   devServer: isProduction
     ? {}
